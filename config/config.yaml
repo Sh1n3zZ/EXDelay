@@ -1,0 +1,23 @@
+proxy:
+  enabled: true
+  http: "http://127.0.0.1:7890"
+  https: "http://127.0.0.1:7890"
+  socks5: "socks5://127.0.0.1:7890"
+
+exchanges:
+  binance:
+    enabled: true
+  coinex:
+    enabled: true
+  gate:
+    enabled: true
+  bitget:
+    enabled: true
+  okx:
+    enabled: false
+  huobi:
+    enabled: true
+  bybit:
+    enabled: true
+  kucoin:
+    enabled: true
