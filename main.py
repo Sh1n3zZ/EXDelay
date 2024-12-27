@@ -23,11 +23,12 @@ class Application:
             self.exchange_manager = ExchangeManager(config)
             await self.exchange_manager.initialize_exchanges(config['exchanges'])
             self.logger.info("应用初始化完成")
+            return True
             
         except Exception as e:
-            print(f"初始化错误: {str(e)}")
-            self.logger.critical(f"应用初始化失败: {str(e)}")
-            raise
+            print(f"初始化过程中出现错误: {str(e)}")
+            self.logger.error(f"应用初始化过程中出现错误: {str(e)}")
+            return False
     
     def signal_handler(self, signum, frame):
         """处理退出信号"""
@@ -90,7 +91,13 @@ class Application:
     
     async def run(self):
         try:
-            await self.initialize()
+            init_success = await self.initialize()
+            if not init_success:
+                self.logger.warning("部分初始化失败,但将继续运行可用的交易所")
+            
+            if not self.exchange_manager or not self.exchange_manager.exchanges:
+                self.logger.error("没有可用的交易所,程序退出")
+                return
             
             self.logger.info("开始监控交易所延迟...")
             print("\n" + "="*50)

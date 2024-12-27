@@ -19,11 +19,16 @@ class ExchangeManager:
         
     async def initialize_exchanges(self, exchange_configs: Dict[str, Any]):
         for name, config in exchange_configs.items():
-            exchange_class = self.get_exchange_class(name)
-            if exchange_class:
-                exchange = exchange_class(config)
-                await exchange.initialize()
-                self.exchanges[name] = exchange
+            try:
+                exchange_class = self.get_exchange_class(name)
+                if exchange_class:
+                    exchange = exchange_class(config)
+                    await exchange.initialize()
+                    self.exchanges[name] = exchange
+                    self.logger.info(f"交易所 {name} 初始化成功")
+            except Exception as e:
+                self.logger.error(f"交易所 {name} 初始化失败: {str(e)}")
+                continue  # 跳过失败的交易所,继续初始化下一个
     
     async def check_all_latencies(self) -> Dict[str, Dict[str, float]]:
         """检查所有交易所的延迟"""
